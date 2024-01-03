@@ -1,0 +1,22 @@
+/* Figma Styles of your File */
+:root {
+  /* Colors */
+  --n: linear-gradient(
+    148.91deg,
+    rgba(255, 61, 0, 1) 0%,
+    rgba(255, 214, 0, 0.96) 100%
+  );
+  --saved: linear-gradient(
+    132.88deg,
+    rgba(0, 162, 172, 0.99) 0%,
+    rgba(8, 145, 197, 0) 100%
+  );
+  --m: linear-gradient(
+    180deg,
+    rgba(177, 0, 232, 1) 0%,
+    rgba(4, 138, 255, 1) 100%
+  );
+
+  /* Fonts */
+  /* Effects */
+}
