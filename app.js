@@ -1,3 +1,41 @@
+var express = require("express");
+var path = require("path");
+var indexRouter = require("./routes/index");
+var usersRouter = require("./routes/users");
+
+var app = express();
+
+app.listen(3000, (err) => {
+  if (!err) console.log("Server is running on http://localhost:3000");
+});
+// view engine setup
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "pug");
+
+app.use(express.static(path.join(__dirname, "public")));
+
+// app.use("/", indexRouter);
+app.get("/", function (req, res, next) {
+  res.status(200).render("base", { me: "addddddddnnnnnnn" });
+});
+// app.use("/users", usersRouter);
+
+// catch 404 and forward to error handler
+//
+// error handler
+// app.use(function (err, req, res, next) {
+//   // set locals, only providing error in development
+//   res.locals.message = err.message;
+//   res.locals.error = req.app.get("env") === "development" ? err : {};
+
+//   // render the error page
+//   res.status(err.status || 500);
+//   res.render("error");
+// });
+
+module.exports = app;
+//recieve data from arduino
+
 // const SerialPort = require("serialport");
 // const Readline = require("@serialport/parser-readline");
 // const http = require("http");
@@ -31,34 +69,3 @@
 //   req.write(postData);
 //   req.end();
 // });
-function generateUserObject(uid, balance) {
-  return {
-    UID: uid,
-    Balance: balance,
-  };
-}
-function me(uid, balance) {
-  // Example: Generate a dynamic user object
-  let dynamicUser = generateUserObject(uid, balance);
-  // window.location.reload();
-
-  // Make the fetch request with the dynamic user object
-  fetch("script.php", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-    },
-    body: JSON.stringify(dynamicUser),
-  })
-    .then(function (res) {
-      return res.text();
-    })
-    .then(function (data) {
-      console.log(data);
-      document.querySelector(".sample").innerHTML = data;
-    });
-}
-// Update every 5 seconds (5000 milliseconds)
-setInterval(function () {
-  me("UIDDDD", "helowwwww");
-}, 5000);
