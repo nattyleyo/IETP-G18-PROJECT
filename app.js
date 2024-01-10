@@ -1,39 +1,31 @@
 var express = require("express");
+const http = require("http");
 var path = require("path");
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
-
+var body_parser = require("body-parser");
+const usersRouter = require("./routes/users");
+const vehiclesRouter = require("./routes/vehicles");
+const transactionsRouter = require("./routes/transactions");
 var app = express();
 
-app.listen(3000, (err) => {
-  if (!err) console.log("Server is running on http://localhost:3000");
-});
+app.use(body_parser.urlencoded({ extended: false }));
+app.use(body_parser.json());
+
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/users", usersRouter);
+app.use("/vehicles", vehiclesRouter);
+app.use("/transactions", transactionsRouter);
+app.get("/", (req, res) => {});
 
-// app.use("/", indexRouter);
-app.get("/", function (req, res, next) {
-  res.status(200).render("base", { me: "addddddddnnnnnnn" });
+app.listen(3000, (err) => {
+  if (!err) console.log("Server is running on http://localhost:3000");
 });
-// app.use("/users", usersRouter);
-
-// catch 404 and forward to error handler
-//
-// error handler
-// app.use(function (err, req, res, next) {
-//   // set locals, only providing error in development
-//   res.locals.message = err.message;
-//   res.locals.error = req.app.get("env") === "development" ? err : {};
-
-//   // render the error page
-//   res.status(err.status || 500);
-//   res.render("error");
-// });
-
 module.exports = app;
+
+/////////////////////////////////////////////////////////////
 //recieve data from arduino
 
 // const SerialPort = require("serialport");

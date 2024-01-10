@@ -1,4 +1,4 @@
-Doctype= Html
+Doctype= html 
 html(lang='en')
   head
     meta(charset='UTF-8')
@@ -6,7 +6,17 @@ html(lang='en')
     meta(name='viewport' content='width=device-width, initial-scale=1.0')
     link(rel='stylesheet' href='css/vars.css')
     link(rel='stylesheet' href='css/style.css')
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css')
+    link(rel='stylesheet' href='https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css')
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
+      integrity='sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=='
+      crossorigin='anonymous'
+      referrerpolicy='no-referrer')
     title Document
+    style.
+      .test{
+          border: 1px solid blue;
+          }
   body
     include _header
     block content
@@ -15,36 +25,85 @@ html(lang='en')
         .left-container
           .search-box
             .frame-271
-              img.frame2(src='' alt='')
-              .search-here search here
-          .user-container 
+              .search-here
+          .user-container(class=`${dataSet[1].userDisp}`)
             .top-header 
               .users2 Users
-              button.frame3 
+              button.add-btn 
                 .add add
-                img.vector4(src='add-icon')
-            .table-user 
-              .table-head 
-                .username-or-email UserID
-                .username-or-email Name
-                .username-or-email Email
-                .username-or-email Phon
-                .username-or-email Address
-                .username-or-email VehicleID
-                .username-or-email Balance
-              .table-body 
-                .username-or-email2 UID
-                .username-or-email2 full name
-                .username-or-email2 full name
-                .username-or-email2 full name
-                .username-or-email2 full name
-                .username-or-email2 full name
-                .username-or-email2 full name
+                i.add-icon.fa-solid.fa-user-plus
+            table#users.table.table-striped(style='width:100%')
+                  thead
+                    tr
+                      th(style='background: #1964d4; color: white;') UserId
+                      th(style='background: #1964d4; color: white;') Name
+                      th(style='background: #1964d4; color: white;') Email
+                      th(style='background: #1964d4; color: white;') Phone
+                      th(style='background: #1964d4; color: white;') Address
+                      th(style='background: #1964d4; color: white;') VehicleId
+                      th(style='background: #1964d4; color: white;') Balance
+                      th(style='background: #1964d4; color: white;') Action
+                  tbody
+                    each row in dataSet[0]
+                      tr.user-records(data-userid=`${row.UserID}`)
+                        td= row.UserID
+                        td= row.Name
+                        td= row.Email
+                        td= row.Phone
+                        td= row.Address
+                        td= 5
+                        td= row.AccountBalance
+                        td= 'edit'
+                    
+          .vehicles-container(class=`${dataSet[1].vehcDisp}`)
+            .top-header 
+              .users2 Vehicles
+            table#vehicles.table.table-striped(style='width:100%')
+                  thead
+                    tr
+                      th(style='background: #1964d4; color: white;') VehicleID
+                      th(style='background: #1964d4; color: white;') UserID
+                      th(style='background: #1964d4; color: white;') LicensePlate
+                      th(style='background: #1964d4; color: white;') VehicleType
+                      th(style='background: #1964d4; color: white;') Action
+                  tbody
+                    each row in  dataSet[0]
+                      tr.user-records(data-userid=`${row.VehicleID}`)
+                        td= row.VehicleID
+                        td= row.UserID
+                        td= row.LicensePlate
+                        td= row.VehicleType
+                        td= 'edit'
+          .transactions-container(class=`${dataSet[1].transDisp}`) 
+            .top-header 
+              .users2 Transactions
+            table#transactions.table.table-striped(style='width:100%')
+                  thead
+                    tr
+                      th(style='background: #1964d4; color: white;') TransactionID
+                      th(style='background: #1964d4; color: white;') UserID
+                      th(style='background: #1964d4; color: white;') Name
+                      th(style='background: #1964d4; color: white;') VehicleID
+                      th(style='background: #1964d4; color: white;') TollBoothID
+                      th(style='background: #1964d4; color: white;') Timestamp
+                      th(style='background: #1964d4; color: white;') Amount
+                      th(style='background: #1964d4; color: white;') Status
+                  tbody
+                    each row in  dataSet[0]
+                      tr.user-records(data-userid=`${row.TransactionID}`)
+                        td= row.TransactionID
+                        td= row.UserID
+                        td= row.Name
+                        td= row.VehicleID
+                        td= row.TollBoothID
+                        td= row.Timestamp
+                        td= row.Amount
+                        td= row.Status            
         .right-container
           .user-profile-box 
             .user-pic 
               .frame-371 
-                .ellipse-22(src="./public/img/ellipse-220.png")  
+                img.drivers-pic(src="images/user.png")  
           .user-detail-box 
             .detail-label 
               .all-details All details
@@ -52,27 +111,63 @@ html(lang='en')
               .uid 
                 .frame-262 
                   .uid2 UID
-                .frame-263 
-                  .sample= me
+                .frame-263
+                  .gg-74873-yhhvhc= dataSet[2].UserID==null?'No data found':dataSet[2].UserID
               .name 
                 .frame-262 
                   .name2 Name
-                .frame-263 
-                  .gg-74873-yhhvhc gg74873yhhvhc
+                .frame-263
+                  .gg-74873-yhhvhc= dataSet[2].Name==null?'No data found':dataSet[2].Name
               .vehicle-id 
                 .frame-2622 
                   .vehicle-id2 VehicleID
                 .frame-263 
-                  .gg-74873-yhhvhc gg74873yhhvhc
+                  .gg-74873-yhhvhc= dataSet[2].VehicleID==null?'No data found':dataSet[2].VehicleID
               .balance 
                 .frame-2622 
                   .balance2 Balance
                 .frame-263 
-                  ._2-000-etb 2,000 ETB
+                  ._2-000-etb= dataSet[2].AccountBalance==null?'No data found':`${dataSet[2].AccountBalance} ETB`
               .status 
                 .frame-2622 
                   .status2 Status
                 .frame-263 
-                  .access-granted access granted
-    //- script(src='app.js')
-
+                  .access-granted= dataSet[2].Status==null?'No data found':dataSet[2].Status
+    script(src='https://code.jquery.com/jquery-3.7.0.js')
+    script(src='https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js')
+    script(src='https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js')
+    script.
+      new DataTable('#users');
+      new DataTable('#vehicles');
+      new DataTable('#transactions');
+    
+      document.querySelector("#users_filter label input:first-child").setAttribute("placeholder", "Search here...");
+      document.querySelector("#vehicles_filter label input:first-child").setAttribute("placeholder", "Search here...");
+      document.querySelector("#transactions_filter label input:first-child").setAttribute("placeholder", "Search here...");
+      
+      const users_btn = document.querySelector(".users");
+      const vehicles_btn = document.querySelector(".vehicles");
+      const transactions_btn = document.querySelector(".transaction");
+      
+      users_btn.addEventListener("click", () => {
+        window.location.href = "/users";
+      });
+      vehicles_btn.addEventListener("click", () => {
+        window.location.href = "/vehicles";
+      });
+      transactions_btn.addEventListener("click", () => {
+        window.location.href = "/transactions";
+      });
+      
+      // Event listener for the user-records buttons
+      var userRecordsButtons = document.querySelectorAll('.user-records');
+      userRecordsButtons.forEach((button)=> {
+        button.addEventListener('click', function(e) {
+          console.log('clicked')
+          var userId = this.dataset.userid;
+          var url = window.location.href.split('?')[0]; // Get the base URL without query parameters
+          window.location.href = url + '?id=' + userId; // Append the 'id' query parameter to the URL
+          console.log(userID);
+          });
+          });
+      

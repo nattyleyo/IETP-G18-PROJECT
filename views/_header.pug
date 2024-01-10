@@ -1,15 +1,20 @@
 .header 
       .profile-box 
-        img.op-profile-pic(src="./node/public/op-profile-pic0.png")  
+        img.op-profile-pic(src="images/operator.png")  
         .op-profile-label 
             .welcome-natty  welcome,
                 span.welcome-natty-span2 Natty
       .nav 
-        .users-button 
-          img.frame(src="", alt="")
+        button.users-button(class=`${dataSet[1].userDisp=='hidden'?'in':'active'}`)
+          i.users-icon.fa-solid.fa-users(style =`display:${dataSet[1].userDisp=='hidden'?'none':'block'}`)
           .users Users
-        .vehicles Vehicles
-        .transaction Transaction
+        button.vehicles(class=`${dataSet[1].vehcDisp=='hidden'?'in':'active'}`)
+          i.fa-solid.fa-car.vehicle-icon(style =`display:${dataSet[1].vehcDisp=='hidden'?'none':'block'}`)
+          .users Vehicles
+        button.transaction(class=`${dataSet[1].transDisp=='hidden'?'in':'active'}`)
+          i.transaction-icon.fa-solid.fa-calendar(style =`display:${dataSet[1].transDisp=='hidden'?'none':'block'}`)
+          .users Transaction
       .log-out-box 
-        .log-out logOut
-          img.logout-icon(src="", alt="", srcset="")
+        button.log-out 
+          .users logOut
+          i.logout-icon.fa-solid.fa-right-from-bracket

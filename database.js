@@ -1,13 +1,10 @@
-// const mysql = require("mysql");
+const mysql = require("mysql");
 
-// const pool = mysql.createConnection({
-//   host: "localhost",
-//   user: "root",
-//   password: "",
-//   database: "mydb",
-// });
-// pool.connect((err) => {
-//   if (err) throw err;
-//   console.log("Database connected!");
-// });
-// module.exports = pool;
+const pool = mysql.createPool({
+  connectionLimit: 10,
+  host: "localhost",
+  user: "natty",
+  password: "1234abcd@",
+  database: "cartoll_db",
+});
+module.exports = pool;
