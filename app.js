@@ -1,7 +1,8 @@
 var express = require("express");
-const http = require("http");
+// const http = require("http");
 var path = require("path");
 var body_parser = require("body-parser");
+const loginRouter = require("./routes/login");
 const usersRouter = require("./routes/users");
 const vehiclesRouter = require("./routes/vehicles");
 const transactionsRouter = require("./routes/transactions");
@@ -15,6 +16,7 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/login", loginRouter);
 app.use("/users", usersRouter);
 app.use("/vehicles", vehiclesRouter);
 app.use("/transactions", transactionsRouter);
@@ -32,7 +34,7 @@ module.exports = app;
 // const Readline = require("@serialport/parser-readline");
 // const http = require("http");
 
-// const port = new SerialPort("COM22", { baudRate: 9600 }); // Replace 'COMx' with your Arduino's port
+// const port = new SerialPort("COM21", { baudRate: 9600 }); // Replace 'COMx' with your Arduino's port
 // const parser = port.pipe(new Readline({ delimiter: "\n" }));
 
 // parser.on("data", (data) => {
