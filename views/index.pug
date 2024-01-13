@@ -1,0 +1,18 @@
+html
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title WebSocket Data Display
+
+  body
+    div#data-container
+    script.
+      const ws = new WebSocket("ws://localhost:3000");
+
+      ws.onmessage = (event) => {
+        const dataContainer = document.getElementById("data-container");
+        const newData = document.createElement("p");
+        newData.textContent = JSON.parse(event.data);
+        console.log(JSON.parse(event.data));
+        dataContainer.appendChild(newData);
+      }

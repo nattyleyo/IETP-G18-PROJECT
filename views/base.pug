@@ -6,6 +6,7 @@ html(lang='en')
     meta(name='viewport' content='width=device-width, initial-scale=1.0')
     link(rel='stylesheet' href='css/vars.css')
     link(rel='stylesheet' href='css/style.css')
+    link(rel='stylesheet' href='css/add-user.css')
     link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css')
     link(rel='stylesheet' href='https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css')
     link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
@@ -17,7 +18,7 @@ html(lang='en')
       .test{
           border: 1px solid blue;
           }
-  body
+  body.body
     include _header
     block content
     .home
@@ -99,7 +100,7 @@ html(lang='en')
                         td= row.Timestamp
                         td= row.Amount
                         td= row.Status            
-        .right-container
+        .right-container#data-container
           .user-profile-box 
             .user-pic 
               .frame-371 
@@ -112,7 +113,7 @@ html(lang='en')
                 .frame-262 
                   .uid2 UID
                 .frame-263
-                  .gg-74873-yhhvhc= dataSet[2].UserID==null?'No data found':dataSet[2].UserID
+                  .gg-74873-yhhvhc scannedcard.UID
               .name 
                 .frame-262 
                   .name2 Name
@@ -133,9 +134,67 @@ html(lang='en')
                   .status2 Status
                 .frame-263 
                   .access-granted= dataSet[2].Status==null?'No data found':dataSet[2].Status
+    
+    .black-bg.hidden
+    form.add-modal-container.hidden(action='/users' method='POST')
+      .top-header-user
+        i.add-icon-user.fa-solid.fa-user-plus
+        .add-label
+          .frame-258
+            .add-user-information Add User Information
+      .content
+        .left
+          .uid-box
+            .uid-label
+              .user-id UserID
+            .uid-input
+              input.inputs(type='text' placeholder='your OID' name='oid')
+          .name-box
+            .name-label
+              .name Name
+            .name-input
+              input.inputs(type='text' placeholder='your OID' name='oid')
+          .phonebox
+            .phone-label
+              .phone Phone
+            .phone-input
+              input.inputs(type='text' placeholder='your OID' name='oid')
+          .address-box
+            .address-label
+              .address Address
+            .address-input
+              input.inputs(type='text' placeholder='your OID' name='oid')
+        img.middle-line
+        .right
+          .vehicle-id-box
+            .vaehicle-id-label
+              .vehicle-id VehicleID
+            .vaehicle-id-input
+              input.inputs(type='text' placeholder='your OID' name='oid')
+          .plate-box
+            .plate-label
+              .license-plate LicensePlate
+            .plate-label2
+              input.inputs(type='text' placeholder='your OID' name='oid')
+          .vaehicle-type-box
+            .vaehicle-type-label
+              .vehicle-type VehicleType
+            .vaehicle-type-input
+              input.inputs(type='text' placeholder='your OID' name='oid')
+          .balance-box
+            .balance-label
+              .balance Balance
+            .balance-input
+              input.inputs(type='text' placeholder='your OID' name='oid')
+      .bottom-btns
+        button.cancel-btn(type='button')
+          .cancel Cancel
+        button.register-btns(type='submit')
+          .register Register
     script(src='https://code.jquery.com/jquery-3.7.0.js')
     script(src='https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js')
     script(src='https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js')
+    script(src='sock.js')
     script.
       new DataTable('#users');
       new DataTable('#vehicles');
@@ -148,7 +207,93 @@ html(lang='en')
       const users_btn = document.querySelector(".users");
       const vehicles_btn = document.querySelector(".vehicles");
       const transactions_btn = document.querySelector(".transaction");
-      
+      const add_btn  = document.querySelector(".add-btn ");
+      const add_modal_container  = document.querySelector(".add-modal-container");
+      const black_bg  = document.querySelector(".black-bg");
+      const cancel_btn  = document.querySelector(".cancel-btn");
+      const body  = document.querySelector('.body');
+
+      const ws = new WebSocket("ws://localhost:3000");
+
+      ws.onmessage = (event) => {
+        const dataContainer = document.getElementById("data-container");
+
+        let content= JSON.parse(event.data);
+        console.log(event.data);
+        let msg='';
+        let msg_color='';
+        if(content.AccountBalance != null){
+            if(content.AccountBalance > 25){
+              msg='Access granted';
+              msg_color='background:rgb(27 182 176 / 16%)';
+              }
+            else {
+              msg='Insufficient balance!';
+              msg_color='background:rgb(255 122 153 / 19%)';
+              }
+        }
+        else{
+          msg='access denied';
+          msg_color='background:rgb(255 122 153 / 19%)';
+        }
+        console.log(msg);
+        dataContainer.innerHTML = `
+       <div class="right-container" id="data-container">
+      <div class="user-profile-box"> 
+        <div class="user-pic"> 
+          <div class="frame-371"> <img class="drivers-pic" src="${content.photo!=null?content.photo:'images/user.png'}"/></div>
+        </div>
+      </div>
+      <div class="user-detail-box"> 
+          <div class="detail-label"> 
+            <div class="all-details">All details</div>
+          </div>
+          <div class="detail-container"> 
+            <div class="uid"> 
+              <div class="frame-262"> 
+                <div class="uid2">UID</div>
+              </div>
+              <div class="frame-263">
+                <div class="gg-74873-yhhvhc">${content.UserID!=null?content.UserID:'no data found'}</div>
+              </div>
+            </div>
+            <div class="name"> 
+              <div class="frame-262"> 
+                <div class="name2">Name</div>
+              </div>
+              <div class="frame-263">
+                <div class="gg-74873-yhhvhc">${content.UserName!=null?content.UserName:'no data found'}</div>
+              </div>
+            </div>
+            <div class="vehicle-id"> 
+              <div class="frame-2622"> 
+                <div class="name2">VehicleID</div>
+              </div>
+              <div class="frame-263"> 
+                <div class="gg-74873-yhhvhc">${content.VehicleID!=null?content.VehicleID:'no data found'}</div>
+              </div>
+            </div>
+            <div class="balance"> 
+              <div class="frame-2622"> 
+                <div class="balance2">Balance</div>
+              </div>
+              <div class="frame-263"> 
+                <div class="_2-000-etb">${content.AccountBalance!=null?content.AccountBalance-25:'no data found'}</div>
+              </div>
+            </div>
+            <div class="status"> 
+              <div class="frame-2622"> 
+                <div class="status2">Status</div>
+              </div>
+              <div class="frame-263" style='${msg_color}';} "> 
+                <div class="access-granted">${msg}</div>
+              </div>
+            </div>
+          </div>
+          </div>
+          </div>`;
+          console.log(JSON.parse(event.data));
+      };    
       users_btn.addEventListener("click", () => {
         window.location.href = "/users";
       });
@@ -157,6 +302,22 @@ html(lang='en')
       });
       transactions_btn.addEventListener("click", () => {
         window.location.href = "/transactions";
+      });
+     
+      add_btn.addEventListener("click", () => {
+        add_modal_container.classList.remove('hidden');
+        black_bg.classList.remove('hidden');
+        body.style.overflow = 'hidden';
+      });
+      black_bg.addEventListener("click", () => {
+        add_modal_container.classList.add('hidden');
+        black_bg.classList.add('hidden');
+        body.style.overflow = 'auto';
+      });
+      cancel_btn.addEventListener('click', () => {
+        add_modal_container.classList.add('hidden');
+        black_bg.classList.add('hidden');
+        body.style.overflow = 'auto';
       });
       
       // Event listener for the user-records buttons
@@ -170,4 +331,6 @@ html(lang='en')
           console.log(userID);
           });
           });
+      
+
       

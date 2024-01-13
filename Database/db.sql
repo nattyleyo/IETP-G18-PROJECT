@@ -1,12 +1,13 @@
 -- Create Users table
-CREATE TABLE Users (
-    UserID INT PRIMARY KEY,
-    Name VARCHAR(255),
-    Address VARCHAR(255),
-    Email VARCHAR(255),
+CREATE TABLE users (
+    UserID VARCHAR(255) PRIMARY KEY,
+    UserName VARCHAR(255),
+    UserAddress VARCHAR(255),
+    UserEmail VARCHAR(255),
     Phone VARCHAR(20),
     AccountBalance DECIMAL(10, 2)
 );
+
 -- Create Vehicles table
 CREATE TABLE Vehicles (
     VehicleID INT PRIMARY KEY,

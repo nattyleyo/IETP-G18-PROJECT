@@ -4,7 +4,7 @@ const pool = mysql.createPool({
   connectionLimit: 10,
   host: "localhost",
   user: "natty",
-  password: "1234abcd@",
-  database: "cartoll_db",
+  password: "12345678",
+  database: "g18_database",
 });
 module.exports = pool;

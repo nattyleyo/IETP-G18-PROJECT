@@ -15,7 +15,7 @@ const int IR_SENSOR_PIN2 = 6; // Replace with the actual pin number you used
 Servo myServo;      
 bool carDetect=false;          // Define servo name
 bool servoMoved=false;          // Define servo name
-
+char UID[20];
 void setup() {
 
   Serial.begin(9600);    // Initialize serial communications with the PC
@@ -32,13 +32,12 @@ void setup() {
   
   lcd.backlight();
   lcd.setCursor(0, 0);
-  lcd.print("Prototype of Toll");
+  lcd.print("Automated Toll");
   lcd.setCursor(0, 1);
   lcd.print("Collection System");
-  delay(8000);
+  delay(4000);
   lcd.clear();            // Optional delay. Some boards need more time after initialization, see Readme
   mfrc522.PCD_DumpVersionToSerial();  // Show details of PCD - MFRC522 Card Reader details
-  Serial.println(F("Scan UID"));
 }
 
 void loop() {
@@ -61,12 +60,19 @@ void loop() {
   // Dump debug info about the card; PICC_HaltA() is automatically called
   if (digitalRead(IR_SENSOR_PIN1) == 0) {
     carDetect=true;
+
   }
- 
+
+  Serial.print(mfrc522.uid.uidByte[0]);
+Serial.print(" ");
+Serial.print(mfrc522.uid.uidByte[1]);
+Serial.print(" ");
+Serial.print(mfrc522.uid.uidByte[2]);
+Serial.print(" ");
+Serial.println(mfrc522.uid.uidByte[3]);
 while(carDetect){
   if (mfrc522.uid.uidByte[0] == userId[0] && mfrc522.uid.uidByte[1] == userId[1] &&
-      mfrc522.uid.uidByte[2] == userId[2] && mfrc522.uid.uidByte[3] == userId[3]) {        
-  
+      mfrc522.uid.uidByte[2] == userId[2] && mfrc522.uid.uidByte[3] == userId[3]) {
     lcd.setCursor(0, 0);
     lcd.print("Access granted");
     lcd.setCursor(0, 1);
@@ -80,7 +86,7 @@ while(carDetect){
     lcd.setCursor(0, 1);
     lcd.print("               ");
     myServo.write(0);
-    delay(15);
+    delay(2000);
     carDetect=false;
   }
   if (digitalRead(6) == 0) {

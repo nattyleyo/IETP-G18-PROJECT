@@ -191,6 +191,7 @@ h5,
   font-size: 20.5px;
   font-weight: 600;
   position: relative;
+  text-decoration: none;
 }
 .logout-icon {
   flex-shrink: 0;
