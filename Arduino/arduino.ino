@@ -32,10 +32,10 @@ void setup() {
   
   lcd.backlight();
   lcd.setCursor(0, 0);
-  lcd.print("Automated Toll");
+  lcd.print("Prototype of Toll");
   lcd.setCursor(0, 1);
   lcd.print("Collection System");
-  delay(4000);
+  delay(8000);
   lcd.clear();            // Optional delay. Some boards need more time after initialization, see Readme
   mfrc522.PCD_DumpVersionToSerial();  // Show details of PCD - MFRC522 Card Reader details
 }
@@ -62,7 +62,6 @@ void loop() {
     carDetect=true;
 
   }
-
   Serial.print(mfrc522.uid.uidByte[0]);
 Serial.print(" ");
 Serial.print(mfrc522.uid.uidByte[1]);
@@ -77,7 +76,7 @@ while(carDetect){
     lcd.print("Access granted");
     lcd.setCursor(0, 1);
     lcd.print("               ");
-    myServo.write(90);
+    moveServoSmoothly(90,15);
     servoMoved=true;
   }
   else {
@@ -85,8 +84,8 @@ while(carDetect){
     lcd.print("Access denied");
     lcd.setCursor(0, 1);
     lcd.print("               ");
-    myServo.write(0);
-    delay(2000);
+    moveServoSmoothly(0,15);
+    delay(15);
     carDetect=false;
   }
   if (digitalRead(6) == 0) {
@@ -96,6 +95,7 @@ while(carDetect){
     lcd.print("               ");
     delay(4000);
     myServo.write(0);
+    moveServoSmoothly(0,15);
     carDetect=false;
     break;
   }
@@ -103,3 +103,18 @@ while(carDetect){
   
   mfrc522.PICC_HaltA();
   }
+void moveServoSmoothly(int targetDegree, int stepDelay) {
+  int currentDegree = myServo.read();
+
+  if (currentDegree < targetDegree) {
+    for (int pos = currentDegree; pos <= targetDegree; pos += 1) {
+      myServo.write(pos);
+      delay(stepDelay);
+    }
+  } else {
+    for (int pos = currentDegree; pos >= targetDegree; pos -= 1) {
+      myServo.write(pos);
+      delay(stepDelay);
+    }
+  }
+}

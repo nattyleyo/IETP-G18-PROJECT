@@ -55,7 +55,7 @@ const parser = port.pipe(new Readline({ delimiter: "\n" }));
 
 //   res.render("base", { dataSet });
 // });
-var rowData = {};
+
 wss.on("connection", (ws) => {
   console.log("WebSocket connection established");
 
@@ -84,13 +84,14 @@ wss.on("connection", (ws) => {
             const rows = results;
 
             if (rows.length > 0) {
-              rowData = rows[0];
-              console.log("ALL data:", rowData.UserID);
-              rowData.AccountBalance =
-                // Send the row data to connected WebSocket clients
-                ws.send(JSON.stringify(rowData));
+              const rowData = rows[0];
+              console.log("ALL data:", rowData);
+
+              // Send the row data to connected WebSocket clients
+              ws.send(JSON.stringify(rowData));
 
               sentData = rowData;
+              sentData.AccountBalance -= 25;
 
               // Insert data into transactions table
               let tempStatus = "";
@@ -98,12 +99,11 @@ wss.on("connection", (ws) => {
 
               if (
                 sentData.AccountBalance != null &&
-                sentData.AccountBalance - 25 > 25
+                sentData.AccountBalance > 25
               ) {
-                tempStatus = "Access granted";
-                amount = 25;
-
                 ////////block to send sms
+                // tempStatus = "Access granted";
+                // amount = 25;
                 // var to = "+251987158100"; // Replace with the recipient's phone number
                 // var body = `Dear ${sentData.UserName} your UserID ${
                 //   sentData.UserID
@@ -131,10 +131,7 @@ wss.on("connection", (ws) => {
                 console.log("Data inserted into transactions table");
 
                 // Update AccountBalance
-                const newAccountBalance =
-                  sentData.AccountBalance > amount
-                    ? sentData.AccountBalance - amount
-                    : sentData.AccountBalance;
+                const newAccountBalance = sentData.AccountBalance - amount;
                 const updateQuery =
                   "UPDATE Users SET AccountBalance = ? WHERE UserID = ?";
                 const updateValues = [newAccountBalance, sentData.UserID];
@@ -172,14 +169,16 @@ wss.on("connection", (ws) => {
     }
   });
 });
+
 port.on("open", () => {
   console.log("Serial port is open");
-  // Send two variables to Arduino
 });
+
 // Handle errors
 port.on("error", (err) => {
   console.error("Error:", err.message);
 });
+
 // Function to send an SMS
 async function sendSMS(body, from, to) {
   try {
@@ -197,5 +196,5 @@ async function sendSMS(body, from, to) {
 
 const PORT = 3000;
 server.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}/users`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });

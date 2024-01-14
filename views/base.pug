@@ -136,12 +136,17 @@ html(lang='en')
                   .access-granted= dataSet[2].Status==null?'No data found':dataSet[2].Status
     
     .black-bg.hidden
-    form.add-modal-container.hidden(action='/users' method='POST')
+    form.add-modal-container.hidden(action='/users' method='POST' enctype='multipart/form-data')
       .top-header-user
         i.add-icon-user.fa-solid.fa-user-plus
         .add-label
           .frame-258
             .add-user-information Add User Information
+          .address-box
+            .photo-label
+              i.upload-icon.fa-solid.fa-cloud-arrow-up
+            .photo-input(style='margin-right: -305px;')
+              input.inputs(type='file' name='image') 
       .content
         .left
           .uid-box
@@ -150,42 +155,44 @@ html(lang='en')
             .uid-input
               input.inputs(type='text' placeholder='your OID' name='oid')
           .name-box
-            .name-label
+            .name-label 
               .name Name
             .name-input
-              input.inputs(type='text' placeholder='your OID' name='oid')
+              input.inputs(type='text' placeholder='your OID' name='name')
           .phonebox
             .phone-label
               .phone Phone
             .phone-input
-              input.inputs(type='text' placeholder='your OID' name='oid')
+              input.inputs(type='text' placeholder='your OID' name='phone')
           .address-box
             .address-label
               .address Address
             .address-input
-              input.inputs(type='text' placeholder='your OID' name='oid')
+              input.inputs(type='text' placeholder='your OID' name='address')
+          
         img.middle-line
         .right
           .vehicle-id-box
             .vaehicle-id-label
               .vehicle-id VehicleID
             .vaehicle-id-input
-              input.inputs(type='text' placeholder='your OID' name='oid')
+              input.inputs(type='text' placeholder='your OID' name='vehicleId')
           .plate-box
-            .plate-label
+            .plate-
               .license-plate LicensePlate
             .plate-label2
-              input.inputs(type='text' placeholder='your OID' name='oid')
+              input.inputs(type='text' placeholder='your OID' name='licensePlate')
           .vaehicle-type-box
             .vaehicle-type-label
               .vehicle-type VehicleType
             .vaehicle-type-input
-              input.inputs(type='text' placeholder='your OID' name='oid')
+              input.inputs(type='text' placeholder='your OID' name='vehicleType')
           .balance-box
             .balance-label
               .balance Balance
             .balance-input
-              input.inputs(type='text' placeholder='your OID' name='oid')
+              input.inputs(type='text' placeholder='your OID' name='balance')
+           
       .bottom-btns
         button.cancel-btn(type='button')
           .cancel Cancel
@@ -278,7 +285,7 @@ html(lang='en')
                 <div class="balance2">Balance</div>
               </div>
               <div class="frame-263"> 
-                <div class="_2-000-etb">${content.AccountBalance!=null?content.AccountBalance-25:'no data found'}</div>
+                <div class="_2-000-etb">${content.AccountBalance!=null?(content.AccountBalance>25?content.AccountBalance-25:content.AccountBalance):'no data found'}</div>
               </div>
             </div>
             <div class="status"> 
