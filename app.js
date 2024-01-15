@@ -4,9 +4,9 @@ const path = require("path");
 var pool = require("./database");
 const twilio = require("twilio");
 // Twilio credentials
-const accountSid = "ACe5539ae6762b55fc1a57a2bb7acfa47b";
-const authToken = "30ee3e6782a31c27d3ce3e1436d0de4f";
-const twilioPhoneNumber = "+12028516597";
+const accountSid = "";
+const authToken = "";
+const twilioPhoneNumber = "";
 
 const client = twilio(accountSid, authToken);
 
@@ -37,7 +37,7 @@ app.use(body_parser.urlencoded({ extended: false }));
 app.use(body_parser.json());
 //use routes
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/login", loginRouter);
+// app.use("/login", loginRouter);
 app.use("/users", usersRouter(wss));
 app.use("/vehicles", vehiclesRouter);
 app.use("/transactions", transactionsRouter);
@@ -86,15 +86,18 @@ wss.on("connection", (ws) => {
             if (rows.length > 0) {
               rowData = rows[0];
               console.log("ALL data:", rowData.UserID);
-              rowData.AccountBalance =
-                // Send the row data to connected WebSocket clients
-                ws.send(JSON.stringify(rowData));
+              // rowData.AccountBalance = rowData.AccountBalance - 25;
+              // Send the row data to connected WebSocket clients
+              ws.send(JSON.stringify(rowData));
+              console.log(rowData.AccountBalance);
 
               sentData = rowData;
 
               // Insert data into transactions table
               let tempStatus = "";
               var amount = 0;
+              console.log("data wanrweeeeeeeeeeeee");
+              console.log(rowData.AccountBalance);
 
               if (
                 sentData.AccountBalance != null &&
@@ -102,17 +105,16 @@ wss.on("connection", (ws) => {
               ) {
                 tempStatus = "Access granted";
                 amount = 25;
-
-                ////////block to send sms
-                // var to = "+251987158100"; // Replace with the recipient's phone number
-                // var body = `Dear ${sentData.UserName} your UserID ${
-                //   sentData.UserID
-                // } has been debited with ETB ${amount} for toll price. Your Current Balance is ETB ${
-                //   sentData.AccountBalance - amount
-                // }.Thank you for using FastExpress. Have safe journy!`;
-                // var from = twilioPhoneNumber;
-                // sendSMS(body, from, to);
-                //end here...
+                // ////////block to send sms
+                var to = "+251987158100"; // Replace with the recipient's phone number
+                var body = `Dear ${sentData.UserName} your UserID ${
+                  sentData.UserID
+                } has been debited with ETB ${amount} for toll price. Your Current Balance is ETB ${
+                  sentData.AccountBalance - amount
+                }.Thank you for using FastExpress. Have safe journy!`;
+                var from = twilioPhoneNumber;
+                sendSMS(body, from, to);
+                // //end here...
               } else {
                 tempStatus = "Access denied";
                 amount = 0;
@@ -132,8 +134,8 @@ wss.on("connection", (ws) => {
 
                 // Update AccountBalance
                 const newAccountBalance =
-                  sentData.AccountBalance > amount
-                    ? sentData.AccountBalance - amount
+                  sentData.AccountBalance > 25
+                    ? sentData.AccountBalance - 25
                     : sentData.AccountBalance;
                 const updateQuery =
                   "UPDATE Users SET AccountBalance = ? WHERE UserID = ?";
@@ -149,7 +151,10 @@ wss.on("connection", (ws) => {
                         updateError.message
                       );
                     } else {
-                      console.log("Data updated successfully:", updateResults);
+                      console.log(
+                        "Data updated successfully:",
+                        newAccountBalance
+                      );
                     }
                   }
                 );
@@ -197,5 +202,5 @@ async function sendSMS(body, from, to) {
 
 const PORT = 3000;
 server.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}/users`);
+  console.log(`Server running on http://localhost:${PORT}/login`);
 });
