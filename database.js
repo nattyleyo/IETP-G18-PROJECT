@@ -5,6 +5,6 @@ const pool = mysql.createPool({
   host: "localhost",
   user: "natty",
   password: "12345678",
-  database: "g18_database",
+  database: "cartoolgate",
 });
 module.exports = pool;

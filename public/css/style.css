@@ -193,6 +193,14 @@ h5,
   position: relative;
   text-decoration: none;
 }
+.trash-icon {
+  margin-left: 30%;
+  color: #ff36bc;
+  font-size: 18px;
+}
+.trash-icon:hover {
+  color: rgb(221, 66, 89);
+}
 .logout-icon {
   flex-shrink: 0;
   width: 20px;
@@ -290,7 +298,8 @@ h5,
   font-weight: 500;
   position: relative;
 }
-.add-btn {
+.add-btn,
+.edit-btn {
   display: flex;
   background: rgba(25, 100, 212, 0.15);
   border-radius: 32px;
@@ -305,11 +314,25 @@ h5,
   position: relative;
   overflow: hidden;
 }
+.edit-btn {
+  position: fixed;
+  right: 5%;
+  top: 100px;
+  font-weight: 500;
+  z-index: 3;
+}
+.edit-btn:hover {
+  cursor: pointer;
+  background: #1964d43b;
+}
+.edit-icon {
+  color: #1964d4;
+}
 .add {
   color: #000000;
   text-align: left;
   font-family: "Roboto-Medium", sans-serif;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
   position: relative;
 }
@@ -384,8 +407,26 @@ h5,
   align-items: center;
   justify-content: flex-start;
   flex-shrink: 0;
-  width: 351.5px;
+  width: 368px;
   position: relative;
+}
+/* .upload-icon {
+  position: absolute;
+  top: 92px;
+  left: 37%;
+  font-size: 37px;
+  color: white;
+  z-index: 9;
+} */
+.black-upload-bg {
+  border-radius: 50%;
+  position: absolute;
+  top: 1%;
+  left: 0%;
+  background: #00000075;
+  width: 147.5px;
+  height: 153px;
+  z-index: 2;
 }
 .user-profile-box {
   background: #ffffff;
@@ -424,7 +465,7 @@ h5,
   border-radius: 50%;
   flex-shrink: 0;
   width: 148.5px;
-  height: 148.5px;
+  height: 152px;
   position: relative;
 }
 .user-detail-box {
@@ -474,7 +515,7 @@ h5,
 .uid {
   display: flex;
   flex-direction: row;
-  gap: 10.78px;
+  gap: 28px;
   align-items: center;
   justify-content: flex-start;
   align-self: stretch;
@@ -482,11 +523,12 @@ h5,
   position: relative;
 }
 .frame-262 {
+  width: 58px;
   display: flex;
   flex-direction: row;
   gap: 6.13px;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   flex-shrink: 0;
   position: relative;
 }
@@ -705,6 +747,7 @@ table.dataTable thead > tr > th.sorting_asc:before {
   transform: scale(1.01);
   background: #1964d45b;
 }
+
 .hidden {
   display: none;
 }

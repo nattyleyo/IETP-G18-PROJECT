@@ -23,6 +23,10 @@ html(lang='en')
     block content
     .home
       .main
+        #notification.notification-box
+          i.fa-solid.fa-circle-check
+          .mess
+          .progres
         .left-container
           .search-box
             .frame-271
@@ -38,7 +42,6 @@ html(lang='en')
                     tr
                       th(style='background: #1964d4; color: white;') UserId
                       th(style='background: #1964d4; color: white;') Name
-                      th(style='background: #1964d4; color: white;') Email
                       th(style='background: #1964d4; color: white;') Phone
                       th(style='background: #1964d4; color: white;') Address
                       th(style='background: #1964d4; color: white;') VehicleId
@@ -48,13 +51,13 @@ html(lang='en')
                     each row in dataSet[0]
                       tr.user-records(data-userid=`${row.UserID}`)
                         td= row.UserID
-                        td= row.Name
-                        td= row.Email
+                        td= row.UserName
                         td= row.Phone
-                        td= row.Address
-                        td= 5
+                        td= row.UserAddress
+                        td= row.VehicleID
                         td= row.AccountBalance
-                        td= 'edit'
+                        td.delete-record
+                          i.trash-icon.fa-solid.fa-trash-can
                     
           .vehicles-container(class=`${dataSet[1].vehcDisp}`)
             .top-header 
@@ -66,18 +69,17 @@ html(lang='en')
                       th(style='background: #1964d4; color: white;') UserID
                       th(style='background: #1964d4; color: white;') LicensePlate
                       th(style='background: #1964d4; color: white;') VehicleType
-                      th(style='background: #1964d4; color: white;') Action
                   tbody
                     each row in  dataSet[0]
                       tr.user-records(data-userid=`${row.VehicleID}`)
                         td= row.VehicleID
                         td= row.UserID
-                        td= row.LicensePlate
+                        td= row.licensePlate
                         td= row.VehicleType
-                        td= 'edit'
           .transactions-container(class=`${dataSet[1].transDisp}`) 
             .top-header 
               .users2 Transactions
+              //- .today= `Today-Collected = ${dataSet[3]}`
             table#transactions.table.table-striped(style='width:100%')
                   thead
                     tr
@@ -85,7 +87,6 @@ html(lang='en')
                       th(style='background: #1964d4; color: white;') UserID
                       th(style='background: #1964d4; color: white;') Name
                       th(style='background: #1964d4; color: white;') VehicleID
-                      th(style='background: #1964d4; color: white;') TollBoothID
                       th(style='background: #1964d4; color: white;') Timestamp
                       th(style='background: #1964d4; color: white;') Amount
                       th(style='background: #1964d4; color: white;') Status
@@ -96,45 +97,66 @@ html(lang='en')
                         td= row.UserID
                         td= row.Name
                         td= row.VehicleID
-                        td= row.TollBoothID
                         td= row.Timestamp
                         td= row.Amount
                         td= row.Status            
-        .right-container#data-container
+        form.right-container#data-container(action='/update' method='POST' enctype='multipart/form-data')
           .user-profile-box 
+            button.edit-btn(class=`${dataSet[2].UserID==null?'hidden':'app'}` type='button')
+                i.edit-icon.fa-solid.fa-pen-to-square
+                .edit-label edit
+            button.save-btn.edit-btn.hidden(type='submit')
+                i.save-icon.fa-solid.fa-floppy-disk
+                .edit-label update
             .user-pic 
               .frame-371 
-                img.drivers-pic(src="images/user.png")  
+                img.drivers-pic(src=`${dataSet[2].photo!=null?dataSet[2].photo:'images/user.png'}`)  
+              input.photo.hidden(type="file" name='photo')
           .user-detail-box 
             .detail-label 
               .all-details All details
-            .detail-container 
+            .detail-container
               .uid 
                 .frame-262 
                   .uid2 UID
-                .frame-263
-                  .gg-74873-yhhvhc scannedcard.UID
-              .name 
+                .uid-input
+                  input.inputs.inact(type='text' name='UserID' disabled value =`${dataSet[2].UserID==null?'No data found':dataSet[2].UserID}`)
+              .uid 
                 .frame-262 
                   .name2 Name
-                .frame-263
-                  .gg-74873-yhhvhc= dataSet[2].Name==null?'No data found':dataSet[2].Name
-              .vehicle-id 
-                .frame-2622 
+                .uid-input
+                  input.inputs.inact(type='text' name='UserName' disabled value =`${dataSet[2].UserName==null?'No data found':dataSet[2].UserName}`)
+              .uid 
+                .frame-262 
+                  .name2 Phone
+                .uid-input
+                  input.inputs.inact(type='text' name='Phone' disabled value =`${dataSet[2].Phone==null?'No data found':dataSet[2].Phone}`)
+              .uid 
+                .frame-262 
+                  .name2 Address
+                .uid-input
+                  input.inputs.inact(type='text' name='UserAddress' disabled value =`${dataSet[2].UserAddress==null?'No data found':dataSet[2].UserAddress}`)
+              .uid 
+                .frame-262
                   .vehicle-id2 VehicleID
-                .frame-263 
-                  .gg-74873-yhhvhc= dataSet[2].VehicleID==null?'No data found':dataSet[2].VehicleID
-              .balance 
-                .frame-2622 
+                .uid-input
+                  input.inputs.inact(type='text' name='vehicleId' disabled value =`${dataSet[2].VehicleID==null?'No data found':dataSet[2].VehicleID}`)
+              .uid
+                .frame-262
+                  .vehicle-id2 LicenseNo
+                .uid-input
+                  input.inputs.inact(type='text' name='licensePlate' disabled value =`${dataSet[2].LicenseNumber==null?'No data found':dataSet[2].LicenseNumber}`)
+              .uid
+                .frame-262 
+                  .vehicle-id2 VehType
+                .uid-input
+                  input.inputs.inact(type='text' name='vehicleType' disabled value =`${dataSet[2].VehicleType==null?'No data found':dataSet[2].VehicleType}`)
+              .uid
+                .frame-262
                   .balance2 Balance
-                .frame-263 
-                  ._2-000-etb= dataSet[2].AccountBalance==null?'No data found':`${dataSet[2].AccountBalance} ETB`
-              .status 
-                .frame-2622 
-                  .status2 Status
-                .frame-263 
-                  .access-granted= dataSet[2].Status==null?'No data found':dataSet[2].Status
-    
+                .uid-input
+                  input.inputs.inact(type='text' name='AccountBalance' disabled value =`${dataSet[2].AccountBalance==null?'No data found':`${dataSet[2].AccountBalance} ETB`}`)
+              
     .black-bg.hidden
     form.add-modal-container.hidden(action='/users' method='POST' enctype='multipart/form-data')
       .top-header-user
@@ -147,28 +169,29 @@ html(lang='en')
               i.upload-icon.fa-solid.fa-cloud-arrow-up
             .photo-input(style='margin-right: -305px;')
               input.inputs(type='file' name='image') 
+      .err-msg
       .content
         .left
           .uid-box
             .uid-label
               .user-id UserID
             .uid-input
-              input.inputs(type='text' placeholder='your OID' name='oid')
+              input.inputs(type='text' placeholder='your OID' name='UserID')
           .name-box
             .name-label 
               .name Name
             .name-input
-              input.inputs(type='text' placeholder='your OID' name='name')
+              input.inputs(type='text' placeholder='your OID' name='UserName')
           .phonebox
             .phone-label
               .phone Phone
             .phone-input
-              input.inputs(type='text' placeholder='your OID' name='phone')
+              input.inputs(type='text' placeholder='your OID' name='Phone')
           .address-box
             .address-label
               .address Address
             .address-input
-              input.inputs(type='text' placeholder='your OID' name='address')
+              input.inputs(type='text' placeholder='your OID' name='UserAddress')
           
         img.middle-line
         .right
@@ -191,7 +214,7 @@ html(lang='en')
             .balance-label
               .balance Balance
             .balance-input
-              input.inputs(type='text' placeholder='your OID' name='balance')
+              input.inputs(type='text' placeholder='your OID' name='AccountBalance')
            
       .bottom-btns
         button.cancel-btn(type='button')
@@ -214,6 +237,7 @@ html(lang='en')
       const users_btn = document.querySelector(".users");
       const vehicles_btn = document.querySelector(".vehicles");
       const transactions_btn = document.querySelector(".transaction");
+      //- const staticstics_btn = document.querySelector(".staticstics");
       const add_btn  = document.querySelector(".add-btn ");
       const add_modal_container  = document.querySelector(".add-modal-container");
       const black_bg  = document.querySelector(".black-bg");
@@ -310,6 +334,7 @@ html(lang='en')
       transactions_btn.addEventListener("click", () => {
         window.location.href = "/transactions";
       });
+      
      
       add_btn.addEventListener("click", () => {
         add_modal_container.classList.remove('hidden');
@@ -326,18 +351,139 @@ html(lang='en')
         black_bg.classList.add('hidden');
         body.style.overflow = 'auto';
       });
-      
-      // Event listener for the user-records buttons
+     // Event listener for the delete buttons
+      // Event listener for the delete buttons
+      var del_btn = document.querySelectorAll('.delete-record');
+      del_btn.forEach((button) => {
+        button.addEventListener('click', function (e) {
+          // Use a confirmation dialog to confirm the deletion
+          var userId=this.closest('.user-records').dataset.userid;
+          var confirmDelete = confirm(`Are you sure you want to delete record with UserID:[ ${userId}] ?`);
+
+          if (confirmDelete) {
+            console.log('deleted ' + userId);
+
+            // Send the data to the server using an HTTP request
+            fetch('/delete', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ userId: userId })
+            })
+            .then(response => {
+              if (response.ok) {
+                // Handle successful response from the server
+                console.log('Record deleted successfully');
+                var url = window.location.href.split('?')[0];
+                window.location.href = url + `?success=Record deleted successfully`;
+                // Perform any additional actions, such as updating the UI
+              } else {
+                // Handle error response from the server
+                console.error('Failed to delete record');
+              }
+            })
+            .catch(error => {
+              // Handle network error
+              console.error('Network error occurred', error);
+            });
+          }
+        });
+      });
+
+            // Event listener for the user-records buttons
       var userRecordsButtons = document.querySelectorAll('.user-records');
-      userRecordsButtons.forEach((button)=> {
-        button.addEventListener('click', function(e) {
-          console.log('clicked')
-          var userId = this.dataset.userid;
-          var url = window.location.href.split('?')[0]; // Get the base URL without query parameters
-          window.location.href = url + '?id=' + userId; // Append the 'id' query parameter to the URL
-          console.log(userID);
+      userRecordsButtons.forEach((button) => {
+          button.addEventListener('click', function (e) {
+              //- e.preventDefault();
+              console.log('clicked');
+              var userId = this.dataset.userid;
+              var url = window.location.href.split('?')[0];
+              window.location.href = url + '?id=' + userId;
+              
           });
+      const saveBtn = document.querySelector('.save-btn');
+      const editBtn = document.querySelector('.edit-btn');
+      const inputFields = document.querySelectorAll('.uid-input input');
+      const photoInput = document.querySelector('.user-pic img');
+      const activeInp = document.querySelectorAll('.inputs'); // Add the name attribute to your file input
+
+      // Add event listener to the Edit button
+      editBtn.addEventListener('click', function () {
+          // Toggle the visibility of the Edit and Save buttons
+          editBtn.classList.add('hidden');
+          saveBtn.classList.remove('hidden');
+          activeInp.forEach((input) => {
+          input.classList.remove('inact');
+          })
+    
+          // Enable input fields
+          inputFields.forEach((input) => {
+              input.removeAttribute('disabled');
           });
+          document.querySelector('.user-pic input[name="photo"]').classList.remove('hidden')
+
+          // Show the file input for photo upload
+          //- photoUploadInput.removeAttribute('disabled');
+      });
+      });
+      // Get references to relevant elements
+      const uploadIcon = document.querySelector('.upload-icon');
+      const Input = document.querySelector('.user-pic input[name="photo"]');
+      const photoDisplay = document.querySelector('.drivers-pic');
+
+      // Add event listener to the upload icon for triggering file input click
+      uploadIcon.addEventListener('click', function () {
+          // Trigger the click event on the hidden file input
+          Input.click();
+      });
+
+      // Add event listener to the file input for photo selection
+      Input.addEventListener('change', function (event) {
+          // Handle photo upload, e.g., display the selected photo
+          const file = event.target.files[0];
+          if (file) {
+              const reader = new FileReader();
+              reader.onload = function (e) {
+                  photoDisplay.src = e.target.result;
+              };
+              reader.readAsDataURL(file);
+          }
+      });
+      // Retrieve the success query parameter from the URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const successMessage = urlParams.get('success');
+
+      // Display the success notification if the message is available
+      if (successMessage) {
+        const notificationBox = document.getElementById('notification');
+        document.querySelector('.mess').textContent = successMessage;
+        notificationBox.style.right = '4%';
+
+        // Animate the notification box
+        notificationBox.classList.add('notification-box');
+
+        // Hide the notification box after 3 seconds
+        setTimeout(() => {
+          notificationBox.style.right= '-100%';
+        }, 7000);
+      }
+      // Get the URL query parameters
+      const urlPar = new URLSearchParams(window.location.search);
+      // Get the value of the 'message' parameter
+      var message = urlPar.get('message');
+      var succ = urlPar.get('success');
+
+      // Check if the message exists and display the modal
+      if (message) {
+        console.log(succ);
+        document.querySelector('.add-modal-container').classList.remove('hidden');
+        document.querySelector('.err-msg').innerHTML=message;
+        document.querySelector('.black-bg').classList.remove('hidden');
+      }
+      
+
+            
       
 
       

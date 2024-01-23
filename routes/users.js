@@ -3,17 +3,20 @@ var router = express.Router();
 const multer = require("multer");
 const path = require("path");
 var pool = require("../database");
+const { rootCertificates } = require("tls");
 
 module.exports = (wss) => {
   /* GET home page. */
   router.get("/", function (req, res, next) {
     const userId = req.query.id;
+
     pool.getConnection((err, conn) => {
       if (err) throw err;
       console.log(`database connected at id ${conn.threadId}`);
 
       // for fetching the table
-      var queryStr = `SELECT * from users`;
+      var queryStr = `SELECT users.*, vehicles.* FROM users LEFT JOIN vehicles ON 
+      users.UserID = vehicles.UserID`;
       conn.query(queryStr, (err, rows) => {
         conn.release();
         if (!err) {
@@ -24,7 +27,9 @@ module.exports = (wss) => {
               userData = rows[i];
             }
           }
-
+          console.log(rows);
+          console.log("selected");
+          console.log(userData);
           var flag = { userDisp: "", vehcDisp: "hidden", transDisp: "hidden" };
           var dataSet = [rows, flag, userData];
 
@@ -84,34 +89,59 @@ module.exports = (wss) => {
       : null; // Check if an image was uploaded
     pool.getConnection((err, conn) => {
       if (err) throw err;
-      console.log(`database connected at id ${conn.threadId}`);
-      // Insert user data into the database
+      console.log(`database@ connected at id ${conn.threadId}`);
+      // Check if UserID already exists in the users table
       conn.query(
-        `INSERT INTO users (UserID, UserName, UserAddress, Phone, AccountBalance, photo) VALUES (?, ?, ?, ?, ?, ?)`,
-        [UserID, UserName, UserAddress, Phone, AccountBalance, photo],
-        (error, userResults) => {
-          if (error) {
-            console.error("Error registering user:", error);
-            return res.status(500).send("User registration failed.");
+        `SELECT UserID FROM users WHERE UserID = ?`,
+        [UserID],
+        (selectError, selectResults) => {
+          if (selectError) {
+            console.error("Error checking UserID existence:", selectError);
+            return res.status(500).send("Error checking UserID existence.");
           }
-          console.log("User registered successfully:", userResults.insertId);
-          // Now, insert vehicle data into the 'vehicles' table
-          const vehicleId = userResults.insertId; // Use the user's insertId as the vehicleId
-          conn.query(
-            `INSERT INTO vehicles (vehicleId, UserID, licensePlate, vehicleType) VALUES (?, ?, ?, ?)`,
-            [vehicleId, UserID, "LicensePlateValue", "VehicleTypeValue"], // Replace with actual values
-            (vehicleError, vehicleResults) => {
-              if (vehicleError) {
-                console.error("Error registering vehicle:", vehicleError);
-                return res.status(500).send("Vehicle registration failed.");
-              }
 
+          if (selectResults.length > 0) {
+            let errorMessage = "UserID already exists.";
+            let successMessage = "User Data updated successfully!";
+            console.log(errorMessage);
+            return res.redirect(
+              `/users?success=false&message=${encodeURIComponent(errorMessage)}`
+            );
+          }
+          // UserID does not exist, proceed with user registration
+          conn.query(
+            `INSERT INTO users (UserID, UserName, UserAddress, Phone, AccountBalance, photo) VALUES (?, ?, ?, ?, ?, ?)`,
+            [UserID, UserName, UserAddress, Phone, AccountBalance, photo],
+            (error, userResults) => {
+              if (error) {
+                console.error("Error registering user:", error);
+                return res.status(500).send("User registration failed.");
+              }
               console.log(
-                "Vehicle registered successfully:",
-                vehicleResults.insertId
+                "User registered successfully:",
+                userResults.insertId
               );
-              let suc = "Registration successful!";
-              res.render("base", { suc });
+              // Now, insert vehicle data into the 'vehicles' table
+              conn.query(
+                `INSERT INTO vehicles (vehicleId, UserID, licensePlate, vehicleType) VALUES (?, ?, ?, ?)`,
+                [vehicleId, UserID, licensePlate, vehicleType],
+                (vehicleError, vehicleResults) => {
+                  if (vehicleError) {
+                    console.error("Error registering vehicle:", vehicleError);
+                    return res.status(500).send("Vehicle registration failed.");
+                  }
+                  console.log(
+                    "Vehicle registered successfully:",
+                    vehicleResults.insertId
+                  );
+                  let successMessage = `UserId[${UserID}] Registered successfully!`;
+                  res.redirect(
+                    `/users?id=${UserID}&success=${encodeURIComponent(
+                      successMessage
+                    )}`
+                  );
+                }
+              );
             }
           );
         }

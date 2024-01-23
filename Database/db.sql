@@ -10,8 +10,8 @@ CREATE TABLE users (
 
 -- Create Vehicles table
 CREATE TABLE Vehicles (
-    VehicleID INT PRIMARY KEY,
-    UserID INT,
+    VehicleID VARCHAR(255) PRIMARY KEY,
+    UserID VARCHAR(255),
     LicenseNumber VARCHAR(20),
     VehicleType VARCHAR(255),
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
@@ -32,16 +32,14 @@ CREATE TABLE RFIDTags (
 );
 -- Create Transactions table
 CREATE TABLE Transactions (
-    TransactionID INT PRIMARY KEY,
-    UserID INT,
-    VehicleID INT,
-    TollBoothID INT,
+    TransactionID INT AUTO_INCREMENT PRIMARY KEY,
+    UserID VARCHAR(255),
+    VehicleID VARCHAR(255),
     Timestamp TIMESTAMP,
     Amount DECIMAL(10, 2),
-    Status ENUM('Authorized', 'Unauthorized'),
+    Status VARCHAR(255),
     FOREIGN KEY (UserID) REFERENCES Users(UserID),
-    FOREIGN KEY (VehicleID) REFERENCES Vehicles(VehicleID),
-    FOREIGN KEY (TollBoothID) REFERENCES TollBooths(TollBoothID)
+    FOREIGN KEY (VehicleID) REFERENCES Vehicles(VehicleID)
 );
 -- Create Operators table
 CREATE TABLE Operators (

@@ -23,19 +23,19 @@ router.get("/", function (req, res, next) {
     };
     // Assuming authentication is successful, you can render the page with the data
   } else {
-    if (userInfo.oid != "nat" && userInfo.password == 123) {
+    if (userInfo.oid != "natty" && userInfo.password == 123456) {
       dataMessage = {
         data: userInfo,
         success: false,
         message: "username incorrect",
       };
-    } else if (userInfo.oid == "nat" && userInfo.password != 123) {
+    } else if (userInfo.oid == "natty" && userInfo.password != 123456) {
       dataMessage = {
         data: userInfo,
         success: false,
         message: "password incorrect",
       };
-    } else if (userInfo.oid != "nat" && userInfo.password != 123) {
+    } else if (userInfo.oid != "natty" && userInfo.password != 123456) {
       dataMessage = {
         data: userInfo,
         success: false,
