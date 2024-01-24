@@ -94,8 +94,7 @@ while(carDetect){
     lcd.setCursor(0, 1);
     lcd.print("               ");
     delay(4000);
-    myServo.write(0);
-    moveServoSmoothly(0,15);
+    moveServoSmoothly(0,20);
     carDetect=false;
     break;
   }

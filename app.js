@@ -4,8 +4,8 @@ const path = require("path");
 var pool = require("./database");
 const twilio = require("twilio");
 // Twilio credentials
-const accountSid = "AC7628abe33992b87634aaed379f604b9d";
-const authToken = "06fa8100fab90829ed935cfb5948796e";
+const accountSid = "AC7628abe3392b87634aaed379f604b9d";
+const authToken = "8e35c0c03bcd3ba398d50a57e24cd8c";
 const twilioPhoneNumber = "+16592174758";
 
 const client = twilio(accountSid, authToken);
@@ -69,69 +69,58 @@ wss.on("connection", (ws) => {
       // Query the database to get the inserted row
       data = parseInt(data.replace(/\s/g, ""), 10);
       console.log(data);
-      if (!receivedData.has(data)) {
-        receivedData.add(data);
-        pool.getConnection((err, conn) => {
-          if (err) throw err;
-          console.log(`database connected at id ${conn.threadId}`);
+      // if (!receivedData.has(data)) {
+      // receivedData.add(data);
+      pool.getConnection((err, conn) => {
+        if (err) throw err;
+        console.log(`database connected at id ${conn.threadId}`);
 
-          conn.query(
-            `SELECT users.*, vehicles.* FROM users LEFT JOIN vehicles ON users.UserID = vehicles.UserID WHERE users.UserID = ?`,
-            [data],
-            (error, results) => {
-              conn.release();
+        conn.query(
+          `SELECT users.*, vehicles.* FROM users LEFT JOIN vehicles ON users.UserID = vehicles.UserID WHERE users.UserID = ?`,
+          [data],
+          (error, results) => {
+            conn.release();
 
-              if (error) {
-                console.error("Error querying the database:", error.message);
-                return;
+            if (error) {
+              console.error("Error querying the database:", error.message);
+              return;
+            }
+
+            const rows = results;
+
+            console.log("start data:");
+            if (rows.length > 0) {
+              console.log("mid data:");
+              var sentData = rows[0];
+              console.log("ALL data:", sentData.UserID);
+              // sentData.AccountBalance = sentData.AccountBalance - 25;
+              // Send the row data to connected WebSocket clients
+              ws.send(JSON.stringify(sentData));
+              console.log(sentData.AccountBalance);
+
+              // Check if the data has already been inserted
+              let tempStatus = "";
+              let amount = 0;
+
+              if (
+                sentData.AccountBalance != null &&
+                sentData.AccountBalance > 25
+              ) {
+                tempStatus = "Access granted";
+                amount = 25;
+              } else {
+                tempStatus = "Access denied";
+                amount = 0;
+                port.write(`false\n`, (err) => {
+                  if (err) {
+                    console.error("Error writing to serial port:", err);
+                  } else {
+                    console.log("Data sent to Arduino:", `false\n`);
+                  }
+                });
               }
-
-              const rows = results;
-
-              console.log("start data:");
-              if (rows.length > 0) {
-                console.log("mid data:");
-                var sentData = rows[0];
-                console.log("ALL data:", sentData.UserID);
-                // sentData.AccountBalance = sentData.AccountBalance - 25;
-                // Send the row data to connected WebSocket clients
-                ws.send(JSON.stringify(sentData));
-                console.log(sentData.AccountBalance);
-
-                // Check if the data has already been inserted
-                let tempStatus = "";
-                let amount = 0;
-
-                if (
-                  sentData.AccountBalance != null &&
-                  sentData.AccountBalance - 25 > 25
-                ) {
-                  tempStatus = "Access granted";
-                  amount = 25;
-                  // ////////block to send sms
-                  // var to = "+251987158100"; // Replace with the recipient's phone number
-                  // var body = `Dear ${sentData.UserName} your UserID ${
-                  //   sentData.UserID
-                  // } has been debited with ETB ${amount} for toll price. Your Current Balance is ETB ${
-                  //   sentData.AccountBalance - amount
-                  // }.Thank you for using FastExpress. Have safe journey!`;
-                  // var from = twilioPhoneNumber;
-                  // sendSMS(body, from, to);
-                  // //end here...
-                } else {
-                  tempStatus = "Access denied";
-                  amount = 0;
-                }
-
-                // const transactionData = {
-                //   UserID: sentData.UserID,
-                //   VehicleID: sentData.VehicleID,
-                //   Amount: amount,
-                //   Status: tempStatus,
-                // };
-
-                console.log(transactionData);
-
+              if (!receivedData.has(data)) {
+                receivedData.add(data);
                 try {
                   conn.query(
                     `INSERT INTO transactions SET UserID=?, UserName=?, VehicleID=?, Timestamp=?, Amount=?, Status=?`,
@@ -202,15 +191,16 @@ wss.on("connection", (ws) => {
                     insertError.message
                   );
                 }
-              } else {
-                ws.send(JSON.stringify("Access Denied"));
-                console.log(JSON.stringify("Access Denied"));
-                console.log("Data not found in the database");
               }
+            } else {
+              ws.send(JSON.stringify("Access Denied"));
+              console.log(JSON.stringify("Access Denied"));
+              console.log("Data not found in the database");
             }
-          );
-        });
-      }
+          }
+        );
+      });
+      // }
     } catch (error) {
       console.error("Error interacting with the database:", error.message);
     }
