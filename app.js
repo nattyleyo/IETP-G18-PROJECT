@@ -144,15 +144,15 @@ wss.on("connection", (ws) => {
                         console.log(count);
                         console.log("try" + count);
                         // Send SMS
-                        var to = "+251993861744"; // Replace with the recipient's phone number
-                        var body = `Dear ${sentData.UserName}, your UserID ${
-                          sentData.UserID
-                        } has been debited with ETB ${amount} for toll price. Your Current Balance is ETB ${
-                          sentData.AccountBalance - amount
-                        }. Thank you for using FastExpress. Have a safe journey!`;
-                        var from = twilioPhoneNumber;
-                        sendSMS(body, from, to); // Assuming you have a function named 'sendSMS' to send the SMS
-                        return;
+                        // var to = "+251993861744"; // Replace with the recipient's phone number
+                        // var body = `Dear ${sentData.UserName}, your UserID ${
+                        //   sentData.UserID
+                        // } has been debited with ETB ${amount} for toll price. Your Current Balance is ETB ${
+                        //   sentData.AccountBalance - amount
+                        // }. Thank you for using FastExpress. Have a safe journey!`;
+                        // var from = twilioPhoneNumber;
+                        // sendSMS(body, from, to); // Assuming you have a function named 'sendSMS' to send the SMS
+                        // return;
                       }
                     }
                   );
